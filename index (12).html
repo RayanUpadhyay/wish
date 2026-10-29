@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Make a birthday wish 🎂</title>
+<meta name="description" content="Make a birthday page for a friend and send them the link.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #1a1a1a; --bg1: #ff7eb6; --bg2: #8a5cf6; --text: #fff; --frost: #fff6fb; --cake1: #ff9ec9; --cake2: #ffd166; }
+  :root[data-theme="ocean"]  { --bg1: #22d3ee; --bg2: #2563eb; --cake1: #7dd3fc; --cake2: #a7f3d0; }
+  :root[data-theme="sunset"] { --bg1: #ffb547; --bg2: #ef4444; --cake1: #fda4af; --cake2: #fde68a; }
+  :root[data-theme="night"]  { --bg1: #312e81; --bg2: #0f172a; --cake1: #c4b5fd; --cake2: #f9a8d4; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { font-family: "Rubik", system-ui, sans-serif; color: var(--ink); background: #fff; font-size: 17px; line-height: 1.45; }
+  [hidden] { display: none !important; }
+
+  /* ===== CARD VIEW ===== */
+  .card-view {
+    position: relative; min-height: 100vh; min-height: 100dvh; overflow: hidden;
+    background: radial-gradient(circle at 30% 20%, var(--bg1), var(--bg2) 75%);
+    color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 20px 60px; text-align: center;
+  }
+  #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .balloons { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .balloon {
+    position: absolute; bottom: -160px; width: 64px; height: 80px; border-radius: 50% 50% 48% 48%;
+    background: var(--c); box-shadow: inset -8px -10px 0 rgba(0,0,0,0.12);
+    animation: rise var(--d) linear var(--delay) infinite;
+  }
+  .balloon::before { content: ""; position: absolute; left: 18px; top: 14px; width: 12px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.45); transform: rotate(25deg); }
+  .balloon::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1.5px; height: 70px; background: rgba(255,255,255,0.7); }
+  @keyframes rise {
+    0% { transform: translate(0, 0) rotate(-4deg); }
+    50% { transform: translate(24px, -60vh) rotate(4deg); }
+    100% { transform: translate(-10px, -130vh) rotate(-4deg); }
+  }
+
+  .hb { position: relative; z-index: 2; margin: 0; font: 400 clamp(30px, 6.5vw, 64px) "Permanent Marker", cursive; letter-spacing: 0.03em; }
+  .hb span { display: inline-block; animation: bob 1.6s ease-in-out infinite; animation-delay: calc(var(--i) * 0.08s); }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .name {
+    position: relative; z-index: 2; margin: 0.05em 0 0.15em; font: 400 clamp(56px, 15vw, 150px) "Permanent Marker", cursive;
+    line-height: 1; overflow-wrap: anywhere; text-shadow: 0 6px 0 rgba(0,0,0,0.18);
+    animation: pop 0.8s cubic-bezier(.2, 1.6, .4, 1) both 0.2s;
+  }
+  @keyframes pop { from { transform: scale(0.3) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  .msg { position: relative; z-index: 2; max-width: 34em; margin: 0 auto; font-size: clamp(18px, 2.3vw, 22px); }
+  .from { position: relative; z-index: 2; margin: 10px 0 0; font: 400 1.5em "Permanent Marker", cursive; opacity: 0.95; }
+
+  /* cake */
+  .cake-wrap { position: relative; z-index: 2; margin: 34px 0 10px; }
+  .cake {
+    position: relative; width: 220px; height: 150px; margin: 0 auto; cursor: pointer; background: none; border: 0; padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cake:focus-visible { outline: 3px solid #fff; outline-offset: 10px; border-radius: 16px; }
+  .layer { position: absolute; left: 50%; transform: translateX(-50%); border: 3px solid var(--ink); border-radius: 14px; }
+  .layer.bottom { bottom: 0; width: 220px; height: 70px; background: var(--cake1); }
+  .layer.top { bottom: 64px; width: 170px; height: 56px; background: var(--cake2); }
+  .layer.top::before, .layer.bottom::before {
+    content: ""; position: absolute; left: -3px; right: -3px; top: -3px; height: 20px; background: var(--frost);
+    border: 3px solid var(--ink); border-radius: 14px 14px 10px 10px;
+  }
+  .plate { position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%); width: 260px; height: 14px; background: #fff; border: 3px solid var(--ink); border-radius: 50%; }
+  .age-num { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font: 400 30px "Permanent Marker", cursive; color: var(--ink); }
+  .candles { position: absolute; left: 50%; bottom: 116px; transform: translateX(-50%); display: flex; gap: 26px; }
+  .candle { position: relative; width: 12px; height: 40px; background: repeating-linear-gradient(45deg, #fff 0 6px, #ff5d8f 6px 12px); border: 2.5px solid var(--ink); border-radius: 4px; }
+  .flame {
+    position: absolute; left: 50%; bottom: 100%; width: 14px; height: 22px; margin-left: -7px; margin-bottom: 4px;
+    background: radial-gradient(circle at 50% 70%, #fff7c2, #ffd23f 45%, #ff8c1a 80%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 0 18px 6px rgba(255, 200, 60, 0.55); transform-origin: 50% 100%; animation: flicker 0.25s ease-in-out infinite alternate;
+  }
+  @keyframes flicker { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(0.9, 1.08) rotate(3deg); } }
+  .out .flame { animation: none; opacity: 0; transform: scale(0.2); transition: opacity 0.3s, transform 0.3s; }
+  .smoke { position: absolute; left: 50%; bottom: 100%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: rgba(255,255,255,0.6); opacity: 0; }
+  .out .smoke { animation: smoke 1.6s ease-out forwards; }
+  @keyframes smoke { 0% { opacity: 0.8; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(3); } }
+  .hint { position: relative; z-index: 2; margin: 22px 0 0; font-weight: 500; opacity: 0.95; min-height: 1.5em; }
+
+  .make-own {
+    position: relative; z-index: 2; margin-top: 30px; display: inline-flex; align-items: center; gap: 6px;
+    background: #fff; color: var(--ink); text-decoration: none; font-weight: 500;
+    border: 2.5px solid var(--ink); border-radius: 999px; padding: 8px 18px; box-shadow: 0 4px 0 var(--ink);
+  }
+  .make-own:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+
+  /* ===== BUILDER ===== */
+  .builder { max-width: 640px; margin: 0 auto; padding: 56px 20px 60px; }
+  .b-title { margin: 0; font: 400 clamp(40px, 8vw, 68px) "Permanent Marker", cursive; line-height: 1; }
+  .b-sub { margin: 10px 0 30px; color: #555; font-size: 1.1em; }
+  .form { border: 3px solid var(--ink); border-radius: 20px; padding: 24px; box-shadow: 0 6px 0 var(--ink); background: #fff; }
+  .f { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; font-weight: 500; }
+  .f small { font-weight: 400; color: #777; }
+  .in {
+    font: inherit; font-weight: 400; padding: 10px 14px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; color: var(--ink);
+  }
+  textarea.in { min-height: 5.5em; resize: vertical; }
+  .in:focus { outline: 3px solid #8a5cf6; outline-offset: 1px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .themes { display: flex; flex-wrap: wrap; gap: 10px; }
+  .swatch {
+    width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); cursor: pointer; padding: 0;
+    background: radial-gradient(circle at 30% 25%, var(--a), var(--b) 75%);
+  }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--ink); }
+  .swatch:focus-visible { outline: 3px solid #8a5cf6; outline-offset: 4px; }
+  .link-box { margin-top: 26px; }
+  .link-out {
+    display: block; width: 100%; font: 500 0.95em ui-monospace, Menlo, Consolas, monospace; padding: 12px 14px;
+    background: #f6f3ff; border: 2.5px dashed #8a5cf6; border-radius: 12px; overflow-wrap: anywhere; color: #3b2a7a;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .btn {
+    font: 500 1em "Rubik", sans-serif; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    border: 2.5px solid var(--ink); border-radius: 999px; padding: 8px 18px; background: #fff; color: var(--ink); box-shadow: 0 4px 0 var(--ink);
+  }
+  .btn.primary { background: #8a5cf6; color: #fff; }
+  .btn.wa { background: #25d366; }
+  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+  .btn:focus-visible { outline: 3px solid #8a5cf6; outline-offset: 3px; }
+  .btn[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+  .foot { text-align: center; color: #777; margin-top: 40px; }
+  .foot a { color: inherit; }
+
+  @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    .balloon, .hb span, .name, .flame { animation: none !important; }
+    .balloon { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- the birthday page a friend sees -->
+<div class="card-view" id="cardView" hidden>
+  <div class="balloons" id="balloons" aria-hidden="true"></div>
+  <p class="hb" id="hb" aria-label="Happy birthday"></p>
+  <h1 class="name" id="cName"></h1>
+  <p class="msg" id="cMsg"></p>
+  <p class="from" id="cFrom"></p>
+  <div class="cake-wrap">
+    <button class="cake" id="cake" type="button" aria-label="Blow out the candles">
+      <span class="candles" id="candles"></span>
+      <span class="layer top"></span>
+      <span class="layer bottom"><span class="age-num" id="ageNum"></span></span>
+      <span class="plate"></span>
+    </button>
+  </div>
+  <p class="hint" id="hint" aria-live="polite">tap the cake to blow out the candles</p>
+  <a class="make-own" href="./">🎂 make one for a friend</a>
+</div>
+
+<!-- the builder -->
+<div class="builder" id="builder" hidden>
+  <h1 class="b-title">Make a birthday wish 🎂</h1>
+  <p class="b-sub">Fill this in, then send your friend the link. They'll get their own birthday page with confetti, balloons, and a cake they can blow out.</p>
+  <div class="form">
+    <label class="f">Friend's name
+      <input class="in" id="fName" maxlength="40" placeholder="Alex" autocomplete="off">
+    </label>
+    <div class="row2">
+      <label class="f">Age they're turning <small>optional</small>
+        <input class="in" id="fAge" type="number" min="1" max="120" placeholder="16">
+      </label>
+      <label class="f">From <small>your name</small>
+        <input class="in" id="fFrom" maxlength="40" placeholder="Rayan" autocomplete="off">
+      </label>
+    </div>
+    <label class="f">Message <small>optional, leave blank for a default one</small>
+      <textarea class="in" id="fMsg" maxlength="280" placeholder="Hope your day is as awesome as you are. Have the best year yet!"></textarea>
+    </label>
+    <div class="f">Colors
+      <div class="themes" id="themes" role="group" aria-label="Color theme">
+        <button type="button" class="swatch" data-theme="party"  style="--a:#ff7eb6;--b:#8a5cf6" aria-label="Party"></button>
+        <button type="button" class="swatch" data-theme="ocean"  style="--a:#22d3ee;--b:#2563eb" aria-label="Ocean"></button>
+        <button type="button" class="swatch" data-theme="sunset" style="--a:#ffb547;--b:#ef4444" aria-label="Sunset"></button>
+        <button type="button" class="swatch" data-theme="night"  style="--a:#312e81;--b:#0f172a" aria-label="Night"></button>
+      </div>
+    </div>
+    <div class="link-box">
+      <span class="f" style="margin:0 0 6px">Their link</span>
+      <span class="link-out" id="linkOut">Type a name to get the link.</span>
+      <div class="actions">
+        <button class="btn primary" id="copyBtn" type="button" aria-disabled="true">copy link</button>
+        <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">send on WhatsApp</a>
+        <a class="btn" id="previewBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">preview</a>
+      </div>
+    </div>
+  </div>
+  <p class="foot">made by Rayan. more at <a href="https://links.rayanupadhyay.com">links.rayanupadhyay.com</a></p>
+</div>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script>
+const $ = id => document.getElementById(id);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const params = new URLSearchParams(location.search);
+const THEMES = ["party", "ocean", "sunset", "night"];
+const DEFAULT_MSG = "Hope your day is as awesome as you are. Have the best year yet!";
+const clip = (s, n) => (s || "").trim().slice(0, n);
+
+/* ---------- confetti ---------- */
+const canvas = $("confetti");
+const ctx = canvas.getContext("2d");
+let bits = [], raf = null;
+function sizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+addEventListener("resize", sizeCanvas);
+sizeCanvas();
+const COLORS = ["#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93", "#ff7eb6", "#ffffff"];
+function burst(x, y, n = 160) {
+  if (reduceMotion) n = Math.min(n, 30);
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 4 + Math.random() * 9;
+    bits.push({
+      x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 6,
+      w: 6 + Math.random() * 6, h: 8 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3,
+      c: COLORS[(Math.random() * COLORS.length) | 0], life: 0
+    });
+  }
+  if (!raf) raf = requestAnimationFrame(tick);
+}
+function tick() {
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  bits.forEach(b => {
+    b.vy += 0.25; b.vx *= 0.99; b.x += b.vx; b.y += b.vy; b.r += b.vr; b.life++;
+    ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.r);
+    ctx.fillStyle = b.c; ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h * Math.abs(Math.cos(b.life * 0.1)));
+    ctx.restore();
+  });
+  bits = bits.filter(b => b.y < innerHeight + 40 && b.life < 400);
+  raf = bits.length ? requestAnimationFrame(tick) : null;
+  if (!raf) ctx.clearRect(0, 0, innerWidth, innerHeight);
+}
+
+/* ---------- card view ---------- */
+function showCard() {
+  const name = clip(params.get("name"), 40);
+  const from = clip(params.get("from"), 40);
+  const msg = clip(params.get("msg"), 280) || DEFAULT_MSG;
+  const age = parseInt(params.get("age"), 10);
+  const theme = THEMES.includes(params.get("theme")) ? params.get("theme") : "party";
+  document.documentElement.dataset.theme = theme;
+  document.title = `Happy Birthday, ${name}! 🎉`;
+
+  const hb = $("hb");
+  [..."HAPPY BIRTHDAY"].forEach((ch, i) => {
+    const s = document.createElement("span");
+    s.textContent = ch === " " ? "\u00a0" : ch;
+    s.style.setProperty("--i", i);
+    s.setAttribute("aria-hidden", "true");
+    hb.appendChild(s);
+  });
+  $("cName").textContent = name + "!";
+  $("cMsg").textContent = msg;
+  if (from) $("cFrom").textContent = "love, " + from; else $("cFrom").hidden = true;
+  if (age > 0 && age < 121) $("ageNum").textContent = age;
+
+  const candles = $("candles");
+  for (let i = 0; i < 3; i++) {
+    const c = document.createElement("span"); c.className = "candle";
+    const f = document.createElement("span"); f.className = "flame";
+    const sm = document.createElement("span"); sm.className = "smoke";
+    c.append(f, sm); candles.appendChild(c);
+  }
+
+  const balloons = $("balloons");
+  const bcolors = ["#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#ff7eb6", "#ffffff"];
+  for (let i = 0; i < 9; i++) {
+    const b = document.createElement("span"); b.className = "balloon";
+    b.style.left = (4 + i * 11 + Math.random() * 5) + "%";
+    b.style.setProperty("--c", bcolors[i % bcolors.length]);
+    b.style.setProperty("--d", (11 + Math.random() * 8) + "s");
+    b.style.setProperty("--delay", (-Math.random() * 15) + "s");
+    balloons.appendChild(b);
+  }
+
+  $("cardView").hidden = false;
+  setTimeout(() => burst(innerWidth / 2, innerHeight * 0.35, 200), 400);
+
+  let blown = false;
+  $("cake").addEventListener("click", () => {
+    if (blown) { burst(innerWidth / 2, innerHeight * 0.6, 120); return; }
+    blown = true;
+    $("candles").classList.add("out");
+    $("hint").textContent = "🎉 make a wish! 🎉";
+    $("cake").setAttribute("aria-label", "More confetti");
+    const r = $("cake").getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top, 220);
+    setTimeout(() => burst(innerWidth * 0.2, innerHeight * 0.3, 100), 300);
+    setTimeout(() => burst(innerWidth * 0.8, innerHeight * 0.3, 100), 500);
+  });
+}
+
+/* ---------- builder ---------- */
+let theme = "party";
+function buildLink() {
+  const name = clip($("fName").value, 40);
+  if (!name) return "";
+  const p = new URLSearchParams({ name });
+  const age = parseInt($("fAge").value, 10);
+  if (age > 0 && age < 121) p.set("age", age);
+  const from = clip($("fFrom").value, 40);
+  if (from) p.set("from", from);
+  const msg = clip($("fMsg").value, 280);
+  if (msg) p.set("msg", msg);
+  if (theme !== "party") p.set("theme", theme);
+  return location.origin + location.pathname + "?" + p.toString();
+}
+function updateBuilder() {
+  const link = buildLink();
+  const on = !!link;
+  $("linkOut").textContent = on ? link : "Type a name to get the link.";
+  ["copyBtn", "waBtn", "previewBtn"].forEach(id => $(id).setAttribute("aria-disabled", on ? "false" : "true"));
+  if (on) {
+    const name = clip($("fName").value, 40);
+    $("previewBtn").href = link;
+    $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(`Happy birthday ${name}! 🎂 I made you something: ${link}`);
+  }
+  document.querySelectorAll(".swatch").forEach(s => s.setAttribute("aria-pressed", s.dataset.theme === theme ? "true" : "false"));
+}
+function showBuilder() {
+  $("builder").hidden = false;
+  ["fName", "fAge", "fFrom", "fMsg"].forEach(id => $(id).addEventListener("input", updateBuilder));
+  document.querySelectorAll(".swatch").forEach(s => s.addEventListener("click", () => { theme = s.dataset.theme; updateBuilder(); }));
+  $("copyBtn").addEventListener("click", async () => {
+    const link = buildLink();
+    if (!link) return;
+    try { await navigator.clipboard.writeText(link); }
+    catch {
+      const t = document.createElement("textarea"); t.value = link; document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); } catch {}
+      t.remove();
+    }
+    $("copyBtn").textContent = "copied!";
+    setTimeout(() => { $("copyBtn").textContent = "copy link"; }, 1400);
+  });
+  updateBuilder();
+}
+
+if (clip(params.get("name"), 40)) showCard(); else showBuilder();
+</script>
+</body>
+</html>
